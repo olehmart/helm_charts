@@ -10,17 +10,17 @@ pipeline {
     stages {
         stage("Init") {
             steps {
-                sh "echo Init"
+                sh "gcloud container clusters get-credentials gke-cluster1 --region us-central1 --project peerless-robot-331021"
             }
         }
         stage("Helm validate") {
             steps {
-                sh "echo 'Helm validate'"
+                sh "helm lint java_hello_world/"
             }
         }
         stage("Helm deploy") {
             steps {
-                sh "echo 'Helm deploy'"
+                sh "helm upgrade --wait --install java_hello_world java_hello_world --namespace java_hello_world"
             }
         }
     }

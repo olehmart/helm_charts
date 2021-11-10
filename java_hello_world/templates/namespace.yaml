@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: java_hello_world
+  labels:
+    app.kubernetes.io/name: {{ include "docker-2-helm.name" . }}
+    helm.sh/chart: {{ include "docker-2-helm.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
