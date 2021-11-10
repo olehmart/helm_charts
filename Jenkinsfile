@@ -15,7 +15,7 @@ pipeline {
         }
         stage("Helm validate") {
             steps {
-                sh "helm lint java_hello_world/"
+                sh "helm lint java-hello-world/"
             }
         }
         stage("Helm deploy") {
