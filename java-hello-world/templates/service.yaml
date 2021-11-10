@@ -15,6 +15,7 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+      nodePort: 30007
   selector:
     app.kubernetes.io/name: {{ include "docker-2-helm.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
