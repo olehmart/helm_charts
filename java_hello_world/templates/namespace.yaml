@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: java_hello_world
+  name: java-hello-world
   labels:
     app.kubernetes.io/name: {{ include "docker-2-helm.name" . }}
     helm.sh/chart: {{ include "docker-2-helm.chart" . }}

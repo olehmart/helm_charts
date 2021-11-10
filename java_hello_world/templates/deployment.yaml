@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "docker-2-helm.fullname" . }}
-  namespace: java_hello_world
+  namespace: java-hello-world
   labels:
     app.kubernetes.io/name: {{ include "docker-2-helm.name" . }}
     helm.sh/chart: {{ include "docker-2-helm.chart" . }}
