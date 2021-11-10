@@ -20,7 +20,7 @@ pipeline {
         }
         stage("Helm deploy") {
             steps {
-                sh "helm upgrade --wait --install java-hello-world java_hello_world --namespace java_hello_world"
+                sh "helm upgrade --wait --install java-hello-world java_hello_world"
             }
         }
     }
