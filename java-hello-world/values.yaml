@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/peerless-robot-331021/java-hello-world
+  repository: gcr.io/peerless-robot-331021/java_hello_world
   tag: latest
   pullPolicy: IfNotPresent
 
