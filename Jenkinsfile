@@ -41,7 +41,7 @@ pipeline {
         }
         stage("Helm dry-run") {
             steps {
-                sh "helm upgrade --dry-run --wait --install ${params.helm_chart} ${params.helm_chart}"
+                sh "helm upgrade --dry-run --wait --install ${params.helm_chart} ${params.helm_chart} --set image.tag=${params.image_tag}"
             }
         }
         stage("Helm deploy") {
@@ -50,7 +50,7 @@ pipeline {
             }
             steps {
                 input message: 'Deploy?', ok: 'Yes'
-                sh "helm upgrade ${dry_run} --wait --install ${params.helm_chart} ${params.helm_chart}"
+                sh "helm upgrade --wait --install ${params.helm_chart} ${params.helm_chart} --set image.tag=${params.image_tag}"
             }
         }
     }
