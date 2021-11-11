@@ -1,7 +1,12 @@
-import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic
+
+def jsonParse(def json) {
+    new groovy.json.JsonSlurperClassic().parseText(json)
+}
+
 String gcr_repo = "gcr.io/peerless-robot-331021/"
 def jsonSlurper = new JsonSlurper()
-def environments_info = jsonSlurper.parseText('''{
+def environments_info = jsonParse('''{
     "dev": {
         "project_id": "peerless-robot-331021",
         "region": "us-central1",
