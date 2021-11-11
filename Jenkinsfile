@@ -5,7 +5,6 @@ def jsonParse(def json) {
 }
 
 String gcr_repo = "gcr.io/peerless-robot-331021/"
-def jsonSlurper = new JsonSlurper()
 def environments_info = jsonParse('''{
     "dev": {
         "project_id": "peerless-robot-331021",
