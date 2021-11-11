@@ -1,3 +1,14 @@
+import groovy.json.JsonSlurper
+String gcr_repo = "gcr.io/peerless-robot-331021/"
+def jsonSlurper = new JsonSlurper()
+def environments_info = jsonSlurper.parseText('''{
+    "dev": {
+        "project_id": "peerless-robot-331021",
+        "region": "us-central1",
+        "cluster_name": "gke-cluster1"
+    }
+}''')
+
 pipeline {
     agent {
         node {
@@ -7,20 +18,35 @@ pipeline {
     options {
         ansiColor('xterm')
     }
+    parameters {
+        string(name: 'image_tag', defaultValue: 'None', description: 'Provide image tag')
+        choice(name: 'environment', choices: ['dev', 'qa', 'prod'], description: 'Choose environment')
+        choice(name: 'helm_chart', choices: ['java-hello-world'], description: 'Choose helm chart')
+        booleanParam(name: 'dry_run', defaultValue: true, description: 'Disable to deploy helm chart')
+    }
     stages {
         stage("Init") {
             steps {
-                sh "gcloud container clusters get-credentials gke-cluster1 --region us-central1 --project peerless-robot-331021"
+                sh "gcloud container clusters get-credentials ${environments_info[$params.environment]["cluster_name"]} --region ${environments_info[$params.environment]["region"]} --project ${environments_info[$params.environment]["project_id"]}"
             }
         }
         stage("Helm validate") {
             steps {
-                sh "helm lint java-hello-world/"
+                sh "helm lint ${params.helm_chart}/"
+            }
+        }
+        stage("Helm dry-run") {
+            steps {
+                sh "helm upgrade --dry-run --wait --install ${params.helm_chart} ${params.helm_chart}"
             }
         }
         stage("Helm deploy") {
+            when {
+                equals expected: false, actual: params.dry_run;
+            }
             steps {
-                sh "helm upgrade --wait --install java-hello-world java-hello-world"
+                input message: 'Deploy?', ok: 'Yes'
+                sh "helm upgrade ${dry_run} --wait --install ${params.helm_chart} ${params.helm_chart}"
             }
         }
     }
