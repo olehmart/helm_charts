@@ -32,7 +32,7 @@ pipeline {
     stages {
         stage("Init") {
             steps {
-                sh "gcloud container clusters get-credentials ${environments_info[$params.environment]["cluster_name"]} --region ${environments_info[$params.environment]["region"]} --project ${environments_info[$params.environment]["project_id"]}"
+                sh "gcloud container clusters get-credentials ${environments_info[params.environment]["cluster_name"]} --region ${environments_info[params.environment]["region"]} --project ${environments_info[params.environment]["project_id"]}"
             }
         }
         stage("Helm validate") {
