@@ -50,7 +50,9 @@ pipeline {
                 equals expected: false, actual: params.dry_run;
             }
             steps {
-                input message: 'Deploy?', ok: 'Yes'
+                if (params.environment != "dev") {
+                    input message: 'Deploy?', ok: 'Yes'
+                }
                 sh "helm upgrade --wait --install ${params.helm_chart} ${params.helm_chart} --set image.tag=${params.image_tag} -f ${params.helm_chart}/${params.environment}-values.yaml"
             }
         }
