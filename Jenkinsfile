@@ -16,7 +16,7 @@ properties ([
     parameters([
         string(name: 'image_tag', defaultValue: 'None', description: 'Provide image tag'),
         choice(name: 'environment', choices: ['dev', 'qa', 'prod'], description: 'Choose environment'),
-        choice(name: 'helm_chart', choices: ['java-hello-world'], description: 'Choose helm chart'),
+        choice(name: 'helm_chart', choices: ['java-hello-world', 'init'], description: 'Choose helm chart'),
         booleanParam(name: 'dry_run', defaultValue: true, description: 'Disable to deploy helm chart')
     ])
 ])
