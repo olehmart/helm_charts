@@ -12,6 +12,12 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+psp:
+  enabled: true
+  psp_name: init-psp
+nsp:
+  enabled: true
+
 service:
   type: NodePort
   port: 8080

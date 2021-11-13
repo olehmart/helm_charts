@@ -1,0 +1,27 @@
+{{- if .Values.psp.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "docker-2-helm.fullname" . }}-role
+  namespace: java-hello-world
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+    - {{ include "docker-2-helm.fullname" . }}-psp
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "docker-2-helm.fullname" . }}-role-binding
+roleRef:
+  kind: Role
+  name: {{ include "docker-2-helm.fullname" . }}-role
+  namespace: java-hello-world
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  name: system:serviceaccounts:java-hello-world
+  apiGroup: rbac.authorization.k8s.io
+{{ end }}
