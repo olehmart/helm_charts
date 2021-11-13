@@ -15,6 +15,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ include "docker-2-helm.fullname" . }}-role-binding
+  namespace: java-hello-world
 roleRef:
   kind: Role
   name: {{ include "docker-2-helm.fullname" . }}-role
