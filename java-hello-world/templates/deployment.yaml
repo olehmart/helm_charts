@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}{{ include 'docker-2-helm.delimiter' . }}{{ .Values.image.tag }}"
+          image: {{ .Values.image.repository }}{{ include "docker-2-helm.delimiter" . }}{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
