@@ -1,5 +1,5 @@
 {{- define "image_link" -}}
-{{- $arg1 := include 'docker-2-helm.delimiter' . -}}
+{{- $arg1 := include "docker-2-helm.delimiter" . -}}
 {{- printf "%s%s%s" .Values.image.repository $arg1 .Values.image.tag -}}
 {{- end -}}
 
