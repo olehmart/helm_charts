@@ -42,6 +42,7 @@ pipeline {
         }
         stage("Get GKE credentials") {
             steps {
+                sh "echo ${global_config}"
                 sh "echo '${global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["name"]}'"
                 sh "echo '${global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["region"]}'"
                 sh "echo '${global_config["common"]["environments"][params.environment]["project_id"]}'"
