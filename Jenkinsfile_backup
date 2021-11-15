@@ -3,7 +3,7 @@ import groovy.json.JsonSlurperClassic
 def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
 }
-def global_config = ""
+
 String gcr_repo = "gcr.io/peerless-robot-331021/"
 def environments_info = jsonParse('''{
     "dev": {
@@ -30,15 +30,9 @@ pipeline {
         ansiColor('xterm')
     }
     stages {
-        stage("Gather additional parameters") {
-            configFileProvider(
-                [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
-                global_config = jsonParse(new File(GLOBAL_CONFIG).text)["helm_charts"]
-            }
-        }
-        stage("Get GKE credentials") {
+        stage("Init") {
             steps {
-                sh "gcloud container clusters get-credentials ${global_config[params.helm_chart]["environments"][environment]["gke_cluster"]["name"]} --region ${global_config[params.helm_chart]["environments"][environment]["gke_cluster"]["region"]} --project ${global_config["common"]["environments"][environment]["project_id"]}"
+                sh "gcloud container clusters get-credentials ${environments_info[params.environment]["cluster_name"]} --region ${environments_info[params.environment]["region"]} --project ${environments_info[params.environment]["project_id"]}"
             }
         }
         stage("Helm validate") {
