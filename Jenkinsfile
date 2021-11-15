@@ -36,13 +36,15 @@ pipeline {
                     configFileProvider(
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
-                        println(global_config["common"]["environments"])
                     }
                 }
             }
         }
         stage("Get GKE credentials") {
             steps {
+                sh "echo '${global_config[params.helm_chart]["environments"][environment]["gke_cluster"]["name"]}'"
+                sh "echo '${global_config[params.helm_chart]["environments"][environment]["gke_cluster"]["region"]}'"
+                sh "echo '${global_config["common"]["environments"][environment]["project_id"]}'"
                 sh "gcloud container clusters get-credentials ${global_config[params.helm_chart]["environments"][environment]["gke_cluster"]["name"]} --region ${global_config[params.helm_chart]["environments"][environment]["gke_cluster"]["region"]} --project ${global_config["common"]["environments"][environment]["project_id"]}"
             }
         }
