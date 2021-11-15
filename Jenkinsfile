@@ -35,6 +35,7 @@ pipeline {
                 script {
                     configFileProvider(
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
+                        sh "cat ${GLOBAL_CONFIG}"
                         global_config = jsonParse(new File(GLOBAL_CONFIG).text)["helm_charts"]
                     }
                 }
