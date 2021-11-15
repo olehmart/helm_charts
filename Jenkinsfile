@@ -36,7 +36,7 @@ pipeline {
                     configFileProvider(
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
-                        println(global_config)
+                        println(global_config["common"]["environments"])
                     }
                 }
             }
