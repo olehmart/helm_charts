@@ -29,11 +29,11 @@ pipeline {
                 script {
                     def causes = currentBuild.getBuildCauses()
                     for(cause in causes) {
-                        if (cause._class.toString().contains("BranchEventCause")) {
-                            manual_mode = false
+                        if (cause._class.toString().contains("UserIdCause")) {
+                            manual_mode = true
                         }
                         else {
-                            manual_mode = true
+                            manual_mode = false
                         }
                     }
                 }
