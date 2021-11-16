@@ -57,12 +57,16 @@ pipeline {
         }
         stage("Helm validate") {
             steps {
-                helm.lint("${params.helm_chart}/")
+                script {
+                    helm.lint("${params.helm_chart}/")
+                }
             }
         }
         stage("Helm dry-run") {
             steps {
-                helm.install(helm_chart_args, dry_run=true)
+                script {
+                    helm.install(helm_chart_args, dry_run=true)
+                }
             }
         }
         stage("Helm deploy") {
