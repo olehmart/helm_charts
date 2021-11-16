@@ -42,7 +42,7 @@ pipeline {
                         chart_name: global_config[params.helm_chart]["chart_name"],
                         chart_path: params.helm_chart,
                         values: ["image.tag": params.image_tag],
-                        values_file: global_config[params.helm_chart]["chart_name"]["environments"][params.environment]["values_file"]
+                        values_file: global_config[params.helm_chart]["environments"][params.environment]["values_file"]
                     ]
                 }
             }
