@@ -139,8 +139,8 @@ pipeline {
                         values_file: global_config[params.helm_chart]["environments"][params.environment]["values_file"]
                     ]
                     gke_args = [
-                        cluster_name: global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["name"]
-                        region: global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["region"]
+                        cluster_name: global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["name"],
+                        region: global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["region"],
                         project: global_config["common"]["environments"][params.environment]["project_id"]
                     ]
                 }
