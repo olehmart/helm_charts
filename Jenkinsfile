@@ -39,9 +39,9 @@ pipeline {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
                     }
                     helm_chart_args = [
-                        chart_name: global_config[params.helm_chart]["chart_name"]
-                        chart_path: params.helm_chart
-                        values: ["image.tag": params.image_tag]
+                        chart_name: global_config[params.helm_chart]["chart_name"],
+                        chart_path: params.helm_chart,
+                        values: ["image.tag": params.image_tag],
                         values_file: global_config[params.helm_chart]["chart_name"]["environments"][params.environment]["values_file"]
                     ]
                 }
