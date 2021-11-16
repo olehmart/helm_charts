@@ -1,3 +1,4 @@
+library 'global-shared-library'
 import groovy.json.JsonSlurperClassic
 
 def jsonParse(def json) {
@@ -37,22 +38,31 @@ pipeline {
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
                     }
+                    helm_chart_args = [
+                        chart_name: global_config[params.helm_chart]["chart_name"]
+                        chart_path: params.helm_chart
+                        values: ["image.tag": params.image_tag]
+                        values_file: global_config[params.helm_chart]["chart_name"]["environments"][params.environment]["values_file"]
+                    ]
                 }
             }
         }
         stage("Get GKE credentials") {
             steps {
-                sh "gcloud container clusters get-credentials ${global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["name"]} --region ${global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["region"]} --project ${global_config["common"]["environments"][params.environment]["project_id"]}"
+                sh "gcloud container clusters get-credentials \
+                    ${global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["name"]} \
+                    --region ${global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["region"]} \
+                    --project ${global_config["common"]["environments"][params.environment]["project_id"]}"
             }
         }
         stage("Helm validate") {
             steps {
-                sh "helm lint ${params.helm_chart}/"
+                helm.lint("${params.helm_chart}/")
             }
         }
         stage("Helm dry-run") {
             steps {
-                sh "helm upgrade --dry-run --wait --install ${params.helm_chart} ${params.helm_chart} --set image.tag=${params.image_tag} -f ${params.helm_chart}/${params.environment}-values.yaml"
+                helm.install(helm_chart_args, dry_run=true)
             }
         }
         stage("Helm deploy") {
@@ -64,7 +74,7 @@ pipeline {
                     if (params.environment != "dev") {
                         input message: 'Deploy?', ok: 'Yes'
                     }
-                    sh "helm upgrade --wait --install ${params.helm_chart} ${params.helm_chart} --set image.tag=${params.image_tag} -f ${params.helm_chart}/${params.environment}-values.yaml"
+                    helm.install(helm_chart_args, dry_run=false)
                 }
             }
         }
