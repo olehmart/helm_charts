@@ -5,14 +5,6 @@ def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
 }
 def global_config = ""
-String gcr_repo = "gcr.io/peerless-robot-331021/"
-def environments_info = jsonParse('''{
-    "dev": {
-        "project_id": "peerless-robot-331021",
-        "region": "us-central1",
-        "cluster_name": "gke-cluster1"
-    }
-}''')
 properties ([
     parameters([
         string(name: 'image_tag', defaultValue: 'None', description: 'Provide image tag'),
@@ -65,7 +57,7 @@ pipeline {
         stage("Helm dry-run") {
             steps {
                 script {
-                    helm.install(args=helm_chart_args, dry_run=true)
+                    helm.install(helm_chart_args, true)
                 }
             }
         }
@@ -78,7 +70,7 @@ pipeline {
                     if (params.environment != "dev") {
                         input message: 'Deploy?', ok: 'Yes'
                     }
-                    helm.install(args=helm_chart_args, dry_run=false)
+                    helm.install(helm_chart_args, false)
                 }
             }
         }
