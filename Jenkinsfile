@@ -65,7 +65,7 @@ pipeline {
         stage("Helm dry-run") {
             steps {
                 script {
-                    helm.install(helm_chart_args, dry_run=True)
+                    helm.install(helm_chart_args, true)
                 }
             }
         }
@@ -78,7 +78,7 @@ pipeline {
                     if (params.environment != "dev") {
                         input message: 'Deploy?', ok: 'Yes'
                     }
-                    helm.install(helm_chart_args, dry_run=False)
+                    helm.install(helm_chart_args, false)
                 }
             }
         }
