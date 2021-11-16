@@ -98,7 +98,7 @@ pipeline {
                     if (active_choice_params["chart_values"] != ''){
                         active_choice_params["chart_values"] = active_choice_params["chart_values"].split(",")
                         for (value in active_choice_params["chart_values"]) {
-                            values += [value.split('=')[0]:value.split('=')[1]]
+                            values += [(value.split('=')[0]):(value.split('=')[1])]
                         }
                         values += ["image.tag": params.image_tag]
                     }
