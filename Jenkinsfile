@@ -43,6 +43,11 @@ pipeline {
             when {
                 equals expected: true, actual: manual_mode
             }
+            agent {
+                node {
+                    label 'master'
+                }
+            }
             steps {
                 script {
                     workspace_path = "${WORKSPACE}"
