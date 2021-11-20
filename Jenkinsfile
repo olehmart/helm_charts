@@ -9,6 +9,44 @@ Boolean manual_mode = false
 properties ([
     parameters([
         string(name: 'image_tag', defaultValue: 'None', description: 'Provide image tag'),
+        [
+                          $class: 'CascadeChoiceParameter',
+                          choiceType: 'PT_SINGLE_SELECT',
+                          name: 'chart_path',
+                          description: 'Select environment',
+                          filterLength: 1,
+                          filterable: true,
+                          script:
+                            [
+                                $class: 'GroovyScript',
+                                fallbackScript:
+                                    [
+                                        sandbox: true,
+                                        script: 'return ["ERROR"]'
+                                    ],
+                                script:
+                                    [
+                                        sandbox: true,
+                                        script: """
+                                            try {
+                                                command = "cd ${workspace_path} && echo \\\$(ls -d */) | sed 's|/||g' | tr -d '\\\n'"
+                                                process = ["/bin/bash", "-c", command].execute()
+                                                def standardOut = new StringBuffer()
+                                                def standardErr = new StringBuffer()
+                                                process.consumeProcessOutput(standardOut, standardErr)
+                                                process.waitFor()
+                                                if (standardOut.size() > 0){
+                                                    return standardOut.tokenize()
+                                                } else if (standardErr.size() > 0){
+                                                    return [standardErr.toString().trim()]
+                                                }
+                                            } catch (error){
+                                                return [error.toString()]
+                                            }
+                                        """
+                                    ]
+                            ]
+                       ],
         choice(name: 'environment', choices: ['dev', 'qa', 'prod'], description: 'Choose environment'),
         choice(name: 'helm_chart', choices: ['java-hello-world', 'init', 'java-app'], description: 'Choose helm chart'),
         booleanParam(name: 'dry_run', defaultValue: true, description: 'Disable to deploy helm chart')
