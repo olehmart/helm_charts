@@ -29,6 +29,7 @@ pipeline {
                 script {
                     def causes = currentBuild.getBuildCauses()
                     for(cause in causes) {
+                        println("CAUSE: " + cause._class.toString())
                         if (cause._class.toString().contains("UserIdCause")) {
                             manual_mode = true
                         }
