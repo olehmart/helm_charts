@@ -56,9 +56,9 @@ pipeline {
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
-                        string(name: 'chart_name', defaultValue: '', description: 'Name of Helm chart to deploy'),
+                        string(name: 'chart_name', defaultValue: params.chart_path, description: 'Name of Helm chart to deploy'),
                         string(name: 'chart_values', defaultValue: '', description: 'Values in format image.repo=value1,image.tag=value2; Leave empty if not needed'),
-                        string(name: 'values_file', defaultValue: '', description: 'Path to values file inside of Helm chart; Leave empty if not needed'),
+                        string(name: 'values_file', defaultValue: params.environment + "-values.yaml", description: 'Path to values file inside of Helm chart; Leave empty if not needed'),
                         string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
                         string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
                         string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed')
