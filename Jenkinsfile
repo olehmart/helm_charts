@@ -4,49 +4,11 @@ import groovy.json.JsonSlurperClassic
 def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
 }
-def global_config = "", workspace_path = "${WORKSPACE}"
+def global_config = ""
 Boolean manual_mode = false
 properties ([
     parameters([
         string(name: 'image_tag', defaultValue: 'None', description: 'Provide image tag'),
-        [
-                          $class: 'CascadeChoiceParameter',
-                          choiceType: 'PT_SINGLE_SELECT',
-                          name: 'chart_path',
-                          description: 'Select chart',
-                          filterLength: 1,
-                          filterable: true,
-                          script:
-                            [
-                                $class: 'GroovyScript',
-                                fallbackScript:
-                                    [
-                                        sandbox: true,
-                                        script: 'return ["ERROR"]'
-                                    ],
-                                script:
-                                    [
-                                        sandbox: true,
-                                        script: """
-                                            try {
-                                                command = "cd ${workspace_path} && echo \\\$(ls -d */) | sed 's|/||g' | tr -d '\\\n'"
-                                                process = ["/bin/bash", "-c", command].execute()
-                                                def standardOut = new StringBuffer()
-                                                def standardErr = new StringBuffer()
-                                                process.consumeProcessOutput(standardOut, standardErr)
-                                                process.waitFor()
-                                                if (standardOut.size() > 0){
-                                                    return standardOut.tokenize()
-                                                } else if (standardErr.size() > 0){
-                                                    return [standardErr.toString().trim()]
-                                                }
-                                            } catch (error){
-                                                return [error.toString()]
-                                            }
-                                        """
-                                    ]
-                            ]
-                       ],
         choice(name: 'environment', choices: ['dev', 'qa', 'prod'], description: 'Choose environment'),
         choice(name: 'helm_chart', choices: ['java-hello-world', 'init', 'java-app'], description: 'Choose helm chart'),
         booleanParam(name: 'dry_run', defaultValue: true, description: 'Disable to deploy helm chart')
@@ -90,53 +52,16 @@ pipeline {
             }
             steps {
                 script {
+                    workspace_path = "${WORKSPACE}"
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
                         string(name: 'chart_name', defaultValue: '', description: 'Name of Helm chart to deploy'),
-                        [
-                          $class: 'CascadeChoiceParameter',
-                          choiceType: 'PT_SINGLE_SELECT',
-                          name: 'chart_path',
-                          description: 'Select chart',
-                          filterLength: 1,
-                          filterable: true,
-                          script:
-                            [
-                                $class: 'GroovyScript',
-                                fallbackScript:
-                                    [
-                                        sandbox: true,
-                                        script: 'return ["ERROR"]'
-                                    ],
-                                script:
-                                    [
-                                        sandbox: true,
-                                        script: """
-                                            try {
-                                                command = "cd ${workspace_path} && echo \\\$(ls -d */) | sed 's|/||g' | tr -d '\\\n'"
-                                                process = ["/bin/bash", "-c", command].execute()
-                                                def standardOut = new StringBuffer()
-                                                def standardErr = new StringBuffer()
-                                                process.consumeProcessOutput(standardOut, standardErr)
-                                                process.waitFor()
-                                                if (standardOut.size() > 0){
-                                                    return standardOut.tokenize()
-                                                } else if (standardErr.size() > 0){
-                                                    return [standardErr.toString().trim()]
-                                                }
-                                            } catch (error){
-                                                return [error.toString()]
-                                            }
-                                        """
-                                    ]
-                            ]
-                       ],
-                       string(name: 'chart_values', defaultValue: '', description: 'Values in format image.repo=value1,image.tag=value2; Leave empty if not needed'),
-                       string(name: 'values_file', defaultValue: '', description: 'Path to values file inside of Helm chart; Leave empty if not needed'),
-                       string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
-                       string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
-                       string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed')
+                        string(name: 'chart_values', defaultValue: '', description: 'Values in format image.repo=value1,image.tag=value2; Leave empty if not needed'),
+                        string(name: 'values_file', defaultValue: '', description: 'Path to values file inside of Helm chart; Leave empty if not needed'),
+                        string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
+                        string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
+                        string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed')
                     ]
                     Map values = [:]
                     if (active_choice_params["chart_values"] != ''){
@@ -154,7 +79,7 @@ pipeline {
                     }
                     helm_chart_args = [
                         chart_name: active_choice_params["chart_name"],
-                        chart_path: active_choice_params["chart_path"],
+                        chart_path: params.helm_chart,
                         values: values,
                         values_file: active_choice_params["values_file"]
                     ]
