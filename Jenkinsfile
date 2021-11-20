@@ -30,7 +30,8 @@ pipeline {
                     def causes = currentBuild.getBuildCauses()
                     for(cause in causes) {
                         println("CAUSE: " + cause._class.toString())
-                        if (cause._class.toString().contains("UserIdCause")) {
+                        cause_str = cause._class.toString()
+                        if (cause_str.contains("UserIdCause") || cause_str.contains("RebuildCause")) {
                             manual_mode = true
                         }
                         else {
