@@ -1,0 +1,5 @@
+image:
+  repository: gcr.io/peerless-robot-331021/java-hello-world
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+  pullPolicy: Always
