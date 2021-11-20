@@ -4,7 +4,7 @@ import groovy.json.JsonSlurperClassic
 def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
 }
-def global_config = ""
+def global_config = "", workspace_path = "${WORKSPACE}"
 Boolean manual_mode = false
 properties ([
     parameters([
@@ -13,7 +13,7 @@ properties ([
                           $class: 'CascadeChoiceParameter',
                           choiceType: 'PT_SINGLE_SELECT',
                           name: 'chart_path',
-                          description: 'Select environment',
+                          description: 'Select chart',
                           filterLength: 1,
                           filterable: true,
                           script:
@@ -90,7 +90,6 @@ pipeline {
             }
             steps {
                 script {
-                    workspace_path = "${WORKSPACE}"
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
@@ -99,7 +98,7 @@ pipeline {
                           $class: 'CascadeChoiceParameter',
                           choiceType: 'PT_SINGLE_SELECT',
                           name: 'chart_path',
-                          description: 'Select environment',
+                          description: 'Select chart',
                           filterLength: 1,
                           filterable: true,
                           script:
