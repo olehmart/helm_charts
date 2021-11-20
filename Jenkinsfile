@@ -87,7 +87,7 @@ pipeline {
                         region: active_choice_params["region"],
                         project: active_choice_params["project"]
                     ]
-                    currentBuild.displayName = params.helm_chart + '-' + ${params.environment} + '-' + env.BUILD_NUMBER
+                    currentBuild.displayName = params.helm_chart + '-' + params.environment + '-' + env.BUILD_NUMBER
                     buildDescription("Chart name: ${active_choice_params["chart_name"]}")
                 }
             }
@@ -113,7 +113,7 @@ pipeline {
                         region: global_config[params.helm_chart]["environments"][params.environment]["gke_cluster"]["region"],
                         project: global_config["common"]["environments"][params.environment]["project_id"]
                     ]
-                    currentBuild.displayName = params.helm_chart + '-' + ${params.environment} + '-' + env.BUILD_NUMBER
+                    currentBuild.displayName = params.helm_chart + '-' + params.environment + '-' + env.BUILD_NUMBER
                     buildDescription("Chart name: ${global_config[params.helm_chart]["chart_name"]}")
                 }
             }
