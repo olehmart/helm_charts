@@ -63,13 +63,10 @@ pipeline {
                     parameters: [
                         string(name: 'chart_values', defaultValue: '', description: 'Values in format image.repo=value1,image.tag=value2; Leave empty if not needed'),
                         string(name: 'values_file', defaultValue: params.environment + "-values.yaml", description: 'Path to values file inside of Helm chart; Leave empty if not needed'),
-                        string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
-                        string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
-                        string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed'),
                         [
                           $class: 'CascadeChoiceParameter',
                           choiceType: 'PT_SINGLE_SELECT',
-                          name: 'cluster_name_new',
+                          name: 'cluster',
                           description: 'Select cluster',
                           filterLength: 1,
                           filterable: true,
@@ -87,7 +84,7 @@ pipeline {
                                         def env = ${params.environment.inspect()}
                                         def cluster_list = []
                                         for (cluster in global_config_infra[env]["gke_clusters"]) {
-                                            cluster_list += "name: " + cluster["name"] + " region: " + cluster["region"] + " project: " + global_config_infra[env]["project_id"]
+                                            cluster_list += "name: " + cluster["name"] + ", region: " + cluster["region"] + ", project: " + global_config_infra[env]["project_id"]
                                         }
                                         return cluster_list
                                     } catch (error){
@@ -119,9 +116,9 @@ pipeline {
                         values_file: active_choice_params["values_file"]
                     ]
                     gke_args = [
-                        cluster_name: active_choice_params["cluster_name"],
-                        region: active_choice_params["region"],
-                        project: active_choice_params["project"]
+                        cluster_name: active_choice_params["cluster"].split(',')[0].split(':')[1],
+                        region: active_choice_params["region"].split(',')[1].split(':')[1],
+                        project: active_choice_params["project"].split(',')[2].split(':')[1]
                     ]
                     currentBuild.displayName = params.helm_chart + '-' + params.environment + '-' + env.BUILD_NUMBER
                     buildDescription("Chart name: ${active_choice_params["chart_name"]}")
