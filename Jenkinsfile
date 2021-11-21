@@ -72,7 +72,26 @@ pipeline {
                         string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
                         string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
                         string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed'),
-                        choice(name: 'cluster_name_sew', choices: cluster_array, description: 'Choose environment'),
+                        [
+                          $class: 'CascadeChoiceParameter',
+                          choiceType: 'PT_SINGLE_SELECT',
+                          name: 'cluster_name_new',
+                          description: 'Select cluster',
+                          filterLength: 1,
+                          filterable: true,
+                          referencedParameters: 'cluster_array',
+                          script: [
+                            $class: 'GroovyScript',
+                            fallbackScript: [
+                                sandbox: true,
+                                script: 'return ["ERROR"]'
+                            ],
+                            script: [
+                                sandbox: true,
+                                script: 'return cluster_array'
+                            ]
+                          ]
+                       ],
                     ]
                     Map values = [:]
                     if (active_choice_params["chart_values"] != ''){
