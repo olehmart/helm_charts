@@ -79,10 +79,8 @@ pipeline {
                                     classpath: [],
                                     sandbox: true,
                                     script: """
-                                        import groovy.json.JsonSlurperClassic
-                                        cfg = groovy.json.JsonSlurperClassic().parseText(global_config)
                                         cluster_array = []
-                                        for (cluster in cfg["infrastructure"][params.environment]["gke_clusters"]){
+                                        for (cluster in global_config["infrastructure"][params.environment]["gke_clusters"]){
                                             cluster_array += cluster["name"]
                                         }
                                         return cluster_array
@@ -107,9 +105,7 @@ pipeline {
                             script: [
                                 sandbox: true,
                                 script: """
-                                    import groovy.json.JsonSlurperClassic
-                                    cfg = groovy.json.JsonSlurperClassic().parseText(global_config)
-                                    return cfg["infrastructure"][params.environment]["gke_clusters"][cluster_name_new]["region"]
+                                    return global_config["infrastructure"][params.environment]["gke_clusters"][cluster_name_new]["region"]
                                 """
                             ]
                           ]
