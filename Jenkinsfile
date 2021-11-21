@@ -83,10 +83,8 @@ pipeline {
                                 sandbox: true,
                                 script: """
                                     try {
-                                        def cfg_infra = ${global_config_infra.inspect()}
-                                        def env = ${params.environment.inspect()}
                                         def cluster_list = []
-                                        for (cluster in cfg_infra[env]["gke_clusters"]) {
+                                        for (cluster in ${global_config_infra[params.environment]["gke_clusters"]}) {
                                             cluster_list += cluster["name"]
                                         }
                                         return cluster_list
