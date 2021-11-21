@@ -80,6 +80,9 @@ pipeline {
                                 script: [
                                     classpath: [],
                                     sandbox: true,
+                                    parameters: [
+                                      [name:'global_config_infra', value: '$global_config_infra']
+                                    ]
                                     script: """
                                         try {
                                             cluster_array = []
