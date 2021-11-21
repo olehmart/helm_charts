@@ -59,8 +59,6 @@ pipeline {
                     }
                     workspace_path = "${WORKSPACE}"
                     env = params.environment
-                    test = global_config_infra["dev"]["gke_clusters"]
-                    println("CLUSTERS --->>> " + test)
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
@@ -73,13 +71,9 @@ pipeline {
                             choiceType: 'PT_SINGLE_SELECT',
                             description: 'Select cluster name',
                             name: 'cluster_name_new',
-                            referencedParameters: 'global_config_infra, params.environment',
+                            referencedParameters: 'global_config_infra, env',
                             script: [
                                 $class: 'GroovyScript',
-                                parameters: [
-                                  [name:'global_config_infra', value: '$global_config_infra'],
-                                  [name:'env', value: '$env'],
-                                ],
                                 fallbackScript: [
                                     classpath: [],
                                     sandbox: true,
