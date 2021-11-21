@@ -51,16 +51,92 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider(
+                        [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
+                        global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
+                    }
                     workspace_path = "${WORKSPACE}"
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
-                        string(name: 'chart_name', defaultValue: params.helm_chart, description: 'Name of Helm chart to deploy'),
                         string(name: 'chart_values', defaultValue: '', description: 'Values in format image.repo=value1,image.tag=value2; Leave empty if not needed'),
                         string(name: 'values_file', defaultValue: params.environment + "-values.yaml", description: 'Path to values file inside of Helm chart; Leave empty if not needed'),
                         string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
                         string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
-                        string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed')
+                        string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed'),
+                        [$class: 'ChoiceParameter',
+                            choiceType: 'PT_SINGLE_SELECT',
+                            description: 'Select cluster name',
+                            name: 'cluster_name_new',
+                            script: [
+                                $class: 'GroovyScript',
+                                fallbackScript: [
+                                    classpath: [],
+                                    sandbox: true,
+                                    script: 'return["ERROR"]'
+                                ],
+                                script: [
+                                    classpath: [],
+                                    sandbox: true,
+                                    script: """
+                                        import groovy.json.JsonSlurperClassic
+                                        cfg = groovy.json.JsonSlurperClassic().parseText(global_config)
+                                        cluster_array = []
+                                        for (cluster in cfg["infrastructure"][params.environment]["gke_clusters"]){
+                                            cluster_array += cluster["name"]
+                                        }
+                                        return cluster_array
+                                    """
+                                ]
+                            ]
+                        ],
+                        [
+                          $class: 'CascadeChoiceParameter',
+                          choiceType: 'PT_SINGLE_SELECT',
+                          name: 'region_new',
+                          description: 'Select resource',
+                          filterLength: 1,
+                          filterable: true,
+                          referencedParameters: 'cluster_name_new',
+                          script: [
+                            $class: 'GroovyScript',
+                            fallbackScript: [
+                                sandbox: true,
+                                script: 'return ["ERROR"]'
+                            ],
+                            script: [
+                                sandbox: true,
+                                script: """
+                                    import groovy.json.JsonSlurperClassic
+                                    cfg = groovy.json.JsonSlurperClassic().parseText(global_config)
+                                    return cfg["infrastructure"][params.environment]["gke_clusters"][cluster_name_new]["region"]
+                                """
+                            ]
+                          ]
+                       ],
+                       [
+                          $class: 'CascadeChoiceParameter',
+                          choiceType: 'PT_SINGLE_SELECT',
+                          name: 'project_new',
+                          description: 'Select resource',
+                          filterLength: 1,
+                          filterable: true,
+                          script: [
+                            $class: 'GroovyScript',
+                            fallbackScript: [
+                                sandbox: true,
+                                script: 'return ["ERROR"]'
+                            ],
+                            script: [
+                                sandbox: true,
+                                script: """
+                                    import groovy.json.JsonSlurperClassic
+                                    cfg = groovy.json.JsonSlurperClassic().parseText(global_config)
+                                    return cfg["infrastructure"][params.environment]["project_id"]
+                                """
+                            ]
+                          ]
+                       ]
                     ]
                     Map values = [:]
                     if (active_choice_params["chart_values"] != ''){
