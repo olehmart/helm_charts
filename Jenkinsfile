@@ -90,8 +90,8 @@ pipeline {
                                 sandbox: true,
                                 script: """
                                     try {
-                                        def sampleMap = ${sampleMap.inspect()}
-                                        return sampleMap.get(cluster_array)
+                                        def sampleMap = ${cluster_array.inspect()}
+                                        return sampleMap
                                     } catch (error){
                                         return [error.toString()]
                                     }
