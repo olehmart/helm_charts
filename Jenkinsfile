@@ -89,7 +89,7 @@ pipeline {
                                     sandbox: true,
                                     script: """
                                         try {
-                                            return cluster_array
+                                            return [cluster_array]
                                          } catch (error){
                                             return [error.toString()]
                                          }
