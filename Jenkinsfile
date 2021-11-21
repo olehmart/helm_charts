@@ -55,7 +55,7 @@ pipeline {
                     configFileProvider(
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
-                        global_config_infra = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"]
+                        clusters_list = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"][params.environment]["gke_clusters"]
                     }
                     workspace_path = "${WORKSPACE}"
                     env = params.environment
@@ -71,7 +71,7 @@ pipeline {
                             choiceType: 'PT_SINGLE_SELECT',
                             description: 'Select cluster name',
                             name: 'cluster_name_new',
-                            referencedParameters: 'global_config_infra, env',
+                            referencedParameters: 'clusters_list, env',
                             script: [
                                 $class: 'GroovyScript',
                                 fallbackScript: [
@@ -85,7 +85,7 @@ pipeline {
                                     script: """
                                         try {
                                             cluster_array = []
-                                            for (cluster in global_config_infra[env]["gke_clusters"]){
+                                            for (cluster in clusters_list){
                                                 cluster_array += cluster["name"]
                                             }
                                             return cluster_array
