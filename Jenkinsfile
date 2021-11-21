@@ -66,13 +66,16 @@ pipeline {
                         string(name: 'cluster_name', defaultValue: '', description: 'GKE cluster name'),
                         string(name: 'region', defaultValue: '', description: 'Region where GKE is deployed'),
                         string(name: 'project', defaultValue: '', description: 'GCP project where GKE is deployed'),
-                        [$class: 'ChoiceParameter',
+                        [$class: 'CascadeChoiceParameter',
                             choiceType: 'PT_SINGLE_SELECT',
                             description: 'Select cluster name',
                             name: 'cluster_name_new',
                             referencedParameters: 'global_config_infra',
                             script: [
                                 $class: 'GroovyScript',
+                                parameters: [
+                                  [name:'global_config_infra', value: '$global_config_infra']
+                                ],
                                 fallbackScript: [
                                     classpath: [],
                                     sandbox: true,
