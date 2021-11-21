@@ -79,11 +79,15 @@ pipeline {
                                     classpath: [],
                                     sandbox: true,
                                     script: """
-                                        cluster_array = []
-                                        for (cluster in global_config["infrastructure"][params.environment]["gke_clusters"]){
-                                            cluster_array += cluster["name"]
-                                        }
-                                        return cluster_array
+                                        try {
+                                            cluster_array = []
+                                            for (cluster in global_config["infrastructure"][params.environment]["gke_clusters"]){
+                                                cluster_array += cluster["name"]
+                                            }
+                                            return cluster_array
+                                         } catch (error){
+                                            return [error.toString()]
+                                         }
                                     """
                                 ]
                             ]
@@ -105,7 +109,11 @@ pipeline {
                             script: [
                                 sandbox: true,
                                 script: """
-                                    return global_config["infrastructure"][params.environment]["gke_clusters"][cluster_name_new]["region"]
+                                    try {
+                                        return global_config["infrastructure"][params.environment]["gke_clusters"][cluster_name_new]["region"]
+                                    } catch (error){
+                                       return [error.toString()]
+                                    }
                                 """
                             ]
                           ]
