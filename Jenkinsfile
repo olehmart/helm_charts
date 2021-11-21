@@ -59,6 +59,8 @@ pipeline {
                     }
                     workspace_path = "${WORKSPACE}"
                     env = params.environment
+                    test = global_config_infra["dev"]["gke_clusters"]
+                    println("CLUSTERS --->>> " + test)
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
