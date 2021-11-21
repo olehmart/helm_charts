@@ -78,6 +78,7 @@ pipeline {
                           name: 'cluster_name_new',
                           description: 'Select cluster',
                           filterLength: 1,
+                          referencedParameters: 'cluster_array',
                           filterable: true,
                           script: [
                             $class: 'GroovyScript',
@@ -86,25 +87,15 @@ pipeline {
                                 script: 'return ["ERROR"]'
                             ],
                             script: [
-                                sandbox: false,
-//                                 script: """
-//                                     try {
-//                                         command = "echo ${cluster_array}"
-//                                         process = ["/bin/bash", "-c", command].execute()
-//                                         def standardOut = new StringBuffer()
-//                                         def standardErr = new StringBuffer()
-//                                         process.consumeProcessOutput(standardOut, standardErr)
-//                                         process.waitFor()
-//                                         if (standardOut.size() > 0){
-//                                             return standardOut.tokenize()
-//                                         } else if (standardErr.size() > 0){
-//                                             return [standardErr.toString().trim()]
-//                                         }
-//                                     } catch (error){
-//                                         return [error.toString()]
-//                                     }
-//                               """
-                                script: 'return cluster_array'
+                                sandbox: true,
+                                script: """
+                                    try {
+                                        def sampleMap = ${sampleMap.inspect()}
+                                        return sampleMap.get(cluster_array)
+                                    } catch (error){
+                                        return [error.toString()]
+                                    }
+                                """
                             ]
                           ]
                        ],
