@@ -87,7 +87,7 @@ pipeline {
                                         def env = ${params.environment.inspect()}
                                         def cluster_list = []
                                         for (cluster in cfg_infra[env]["gke_clusters"]) {
-                                            cluster_list += cluster
+                                            cluster_list += cluster["name"]
                                         }
                                         return cluster_list
                                     } catch (error){
