@@ -55,15 +55,9 @@ pipeline {
                     configFileProvider(
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
-                        clusters_list = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"][params.environment]["gke_clusters"]
-                    }
-                    cluster_array = []
-                    for (cluster in clusters_list){
-                        println(cluster["name"])
-                        cluster_array += cluster["name"]
+                        global_config_infra = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"]
                     }
                     workspace_path = "${WORKSPACE}"
-                    env = params.environment
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
@@ -78,7 +72,6 @@ pipeline {
                           name: 'cluster_name_new',
                           description: 'Select cluster',
                           filterLength: 1,
-                          //referencedParameters: 'cluster_array',
                           filterable: true,
                           script: [
                             $class: 'GroovyScript',
@@ -90,8 +83,13 @@ pipeline {
                                 sandbox: true,
                                 script: """
                                     try {
-                                        def sampleMap = ${cluster_array.inspect()}
-                                        return sampleMap
+                                        def cfg_infra = ${global_config_infra.inspect()}
+                                        def env = ${params.environment.inspect()}
+                                        def cluster_list = []
+                                        for (cluster in cfg_infra[env]["gke_clusters"]) {
+                                            cluster_list += cluster
+                                        }
+                                        return cluster_list
                                     } catch (error){
                                         return [error.toString()]
                                     }
