@@ -87,7 +87,23 @@ pipeline {
                             ],
                             script: [
                                 sandbox: true,
-                                script: 'return cluster_array'
+                                script: """
+                                    try {
+                                        command = "echo ${cluster_array}"
+                                        process = ["/bin/bash", "-c", command].execute()
+                                        def standardOut = new StringBuffer()
+                                        def standardErr = new StringBuffer()
+                                        process.consumeProcessOutput(standardOut, standardErr)
+                                        process.waitFor()
+                                        if (standardOut.size() > 0){
+                                            return standardOut.tokenize()
+                                        } else if (standardErr.size() > 0){
+                                            return [standardErr.toString().trim()]
+                                        }
+                                    } catch (error){
+                                        return [error.toString()]
+                                    }
+                                """
                             ]
                           ]
                        ],
