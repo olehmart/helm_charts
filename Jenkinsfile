@@ -57,6 +57,10 @@ pipeline {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
                         clusters_list = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"][params.environment]["gke_clusters"]
                     }
+                    cluster_array = []
+                    for (cluster in clusters_list){
+                        cluster_array += cluster["name"]
+                    }
                     workspace_path = "${WORKSPACE}"
                     env = params.environment
                     active_choice_params = input message: "Please, provide additional parameters:",
@@ -71,7 +75,7 @@ pipeline {
                             choiceType: 'PT_SINGLE_SELECT',
                             description: 'Select cluster name',
                             name: 'cluster_name_new',
-                            referencedParameters: 'clusters_list, env',
+                            referencedParameters: 'cluster_array',
                             script: [
                                 $class: 'GroovyScript',
                                 fallbackScript: [
@@ -84,11 +88,6 @@ pipeline {
                                     sandbox: true,
                                     script: """
                                         try {
-                                            cluster_array = []
-                                            for (cluster in clusters_list){
-                                                println(cluster)
-                                                cluster_array += cluster["name"]
-                                            }
                                             return cluster_array
                                          } catch (error){
                                             return [error.toString()]
