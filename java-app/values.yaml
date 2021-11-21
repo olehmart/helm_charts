@@ -4,11 +4,19 @@
 
 replicaCount: 1
 
+namespace: default
+
 image:
   repository: gcr.io/peerless-robot-331021/java-hello-world
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
   pullPolicy: Always
+
+psp:
+  enabled: true
+  name: init-psp
+nsp:
+  enabled: true
 
 imagePullSecrets: []
 nameOverride: ""

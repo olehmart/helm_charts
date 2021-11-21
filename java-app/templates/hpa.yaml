@@ -3,6 +3,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "java-app.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "java-app.labels" . | nindent 4 }}
 spec:
