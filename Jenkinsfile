@@ -58,6 +58,7 @@ pipeline {
                         global_config_infra = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"]
                     }
                     workspace_path = "${WORKSPACE}"
+                    env = params.environment
                     active_choice_params = input message: "Please, provide additional parameters:",
                     ok: "Run",
                     parameters: [
@@ -75,7 +76,7 @@ pipeline {
                                 $class: 'GroovyScript',
                                 parameters: [
                                   [name:'global_config_infra', value: '$global_config_infra'],
-                                  [name:'params.environment', value: '$params.environment'],
+                                  [name:'env', value: '$env'],
                                 ],
                                 fallbackScript: [
                                     classpath: [],
@@ -88,7 +89,7 @@ pipeline {
                                     script: """
                                         try {
                                             cluster_array = []
-                                            for (cluster in global_config_infra[params.environment]["gke_clusters"]){
+                                            for (cluster in global_config_infra[env]["gke_clusters"]){
                                                 cluster_array += cluster["name"]
                                             }
                                             return cluster_array
