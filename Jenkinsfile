@@ -87,7 +87,7 @@ pipeline {
                                         def env = ${params.environment.inspect()}
                                         def cluster_list = []
                                         for (cluster in global_config_infra[env]["gke_clusters"]) {
-                                            cluster_list += cluster["name"]
+                                            cluster_list += "name: " + cluster["name"] + " region: " + cluster["region"] + " project: " + global_config_infra[env]["project_id"]
                                         }
                                         return cluster_list
                                     } catch (error){
@@ -96,7 +96,7 @@ pipeline {
                                 """
                             ]
                           ]
-                       ],
+                       ]
                     ]
                     Map values = [:]
                     if (active_choice_params["chart_values"] != ''){
