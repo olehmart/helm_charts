@@ -85,7 +85,7 @@ pipeline {
                                     script: """
                                         try {
                                             cluster_array = []
-                                            for (cluster in global_config_infra["dev"]["gke_clusters"]){
+                                            for (cluster in global_config_infra[env]["gke_clusters"]){
                                                 cluster_array += cluster["name"]
                                             }
                                             return cluster_array
