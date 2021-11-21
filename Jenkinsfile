@@ -72,6 +72,9 @@ pipeline {
                             name: 'cluster_name_new',
                             script: [
                                 $class: 'GroovyScript',
+                                parameters: [
+                                  [name:'global_config_infra', value: '$global_config_infra']
+                                ],
                                 fallbackScript: [
                                     classpath: [],
                                     sandbox: true,
@@ -80,9 +83,6 @@ pipeline {
                                 script: [
                                     classpath: [],
                                     sandbox: true,
-                                    parameters: [
-                                      [name:'global_config_infra', value: '$global_config_infra']
-                                    ],
                                     script: """
                                         try {
                                             cluster_array = []
