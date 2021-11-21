@@ -86,6 +86,7 @@ pipeline {
                                         try {
                                             cluster_array = []
                                             for (cluster in clusters_list){
+                                                println(cluster)
                                                 cluster_array += cluster["name"]
                                             }
                                             return cluster_array
