@@ -59,6 +59,7 @@ pipeline {
                     }
                     cluster_array = []
                     for (cluster in clusters_list){
+                        println(cluster["name"])
                         cluster_array += cluster["name"]
                     }
                     workspace_path = "${WORKSPACE}"
