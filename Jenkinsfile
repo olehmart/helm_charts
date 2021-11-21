@@ -78,7 +78,7 @@ pipeline {
                           name: 'cluster_name_new',
                           description: 'Select cluster',
                           filterLength: 1,
-                          referencedParameters: 'cluster_array',
+                          //referencedParameters: 'cluster_array',
                           filterable: true,
                           script: [
                             $class: 'GroovyScript',
