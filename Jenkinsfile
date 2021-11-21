@@ -75,7 +75,7 @@ pipeline {
                                 $class: 'GroovyScript',
                                 parameters: [
                                   [name:'global_config_infra', value: '$global_config_infra'],
-                                  [name:'environment', value: '$params.environment'],
+                                  [name:'params.environment', value: '$params.environment'],
                                 ],
                                 fallbackScript: [
                                     classpath: [],
@@ -88,7 +88,7 @@ pipeline {
                                     script: """
                                         try {
                                             cluster_array = []
-                                            for (cluster in global_config_infra[environment]["gke_clusters"]){
+                                            for (cluster in global_config_infra[params.environment]["gke_clusters"]){
                                                 cluster_array += cluster["name"]
                                             }
                                             return cluster_array
