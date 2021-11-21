@@ -3,8 +3,10 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "docker-2-helm.fullname" . }}-nsp
+  name: {{ include "java-app.fullname" . }}-nsp
   namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "java-app.labels" . | nindent 4 }}
 spec:
   podSelector: {}
   ingress:

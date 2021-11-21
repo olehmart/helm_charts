@@ -2,8 +2,10 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "docker-2-helm.fullname" . }}-role
+  name: {{ include "java-app.fullname" . }}-role
   namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "java-app.labels" . | nindent 4 }}
 rules:
 - apiGroups: ['policy']
   resources: ['podsecuritypolicies']
@@ -14,11 +16,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "docker-2-helm.fullname" . }}-role-binding
+  name: {{ include "java-app.fullname" . }}-role-binding
   namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "java-app.labels" . | nindent 4 }}
 roleRef:
   kind: Role
-  name: {{ include "docker-2-helm.fullname" . }}-role
+  name: {{ include "java-app.fullname" . }}-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount

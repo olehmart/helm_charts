@@ -120,9 +120,6 @@ pipeline {
                         region: active_choice_params["cluster"].split(',')[1].split(':')[1],
                         project: active_choice_params["cluster"].split(',')[2].split(':')[1]
                     ]
-                    println("cluster_name: " + active_choice_params["cluster"].split(',')[0].split(':')[1])
-                    println("region: " + active_choice_params["cluster"].split(',')[1].split(':')[1])
-                    println("project: " + active_choice_params["cluster"].split(',')[2].split(':')[1])
                     currentBuild.displayName = params.helm_chart + '-' + params.environment + '-' + env.BUILD_NUMBER
                     buildDescription("Chart name: ${active_choice_params["chart_name"]}")
                 }
