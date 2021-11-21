@@ -86,7 +86,7 @@ pipeline {
                                         def global_config_infra = ${global_config_infra.inspect()}
                                         def env = ${params.environment.inspect()}
                                         def cluster_list = []
-                                        for (cluster in global_config_infra[env]["gke_clusters"] {
+                                        for (cluster in global_config_infra[env]["gke_clusters"]) {
                                             cluster_list += cluster["name"]
                                         }
                                         return cluster_list
