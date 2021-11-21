@@ -5,6 +5,7 @@ def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
 }
 def global_config = ""
+def global_config_infra = ""
 Boolean manual_mode = false
 properties ([
     parameters([
@@ -54,6 +55,7 @@ pipeline {
                     configFileProvider(
                         [configFile(fileId: 'global_cicd_config', variable: 'GLOBAL_CONFIG')]) {
                         global_config = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["helm_charts"]
+                        global_config_infra = jsonParse(sh(script: "cat ${GLOBAL_CONFIG}", returnStdout: true).trim())["infrastructure"]
                     }
                     workspace_path = "${WORKSPACE}"
                     active_choice_params = input message: "Please, provide additional parameters:",
@@ -81,7 +83,7 @@ pipeline {
                                     script: """
                                         try {
                                             cluster_array = []
-                                            for (cluster in global_config["infrastructure"][params.environment]["gke_clusters"]){
+                                            for (cluster in global_config_infra[params.environment]["gke_clusters"]){
                                                 cluster_array += cluster["name"]
                                             }
                                             return cluster_array
@@ -110,7 +112,7 @@ pipeline {
                                 sandbox: true,
                                 script: """
                                     try {
-                                        return global_config["infrastructure"][params.environment]["gke_clusters"][cluster_name_new]["region"]
+                                        return global_config_infra[params.environment]["gke_clusters"][cluster_name_new]["region"]
                                     } catch (error){
                                        return [error.toString()]
                                     }
@@ -134,9 +136,11 @@ pipeline {
                             script: [
                                 sandbox: true,
                                 script: """
-                                    import groovy.json.JsonSlurperClassic
-                                    cfg = groovy.json.JsonSlurperClassic().parseText(global_config)
-                                    return cfg["infrastructure"][params.environment]["project_id"]
+                                    try {
+                                        return global_config_infra[params.environment]["project_id"]
+                                    } catch (error){
+                                       return [error.toString()]
+                                    }
                                 """
                             ]
                           ]
