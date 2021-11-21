@@ -70,11 +70,9 @@ pipeline {
                             choiceType: 'PT_SINGLE_SELECT',
                             description: 'Select cluster name',
                             name: 'cluster_name_new',
+                            referencedParameters: 'global_config_infra',
                             script: [
                                 $class: 'GroovyScript',
-                                parameters: [
-                                  [name:'global_config_infra', value: '$global_config_infra']
-                                ],
                                 fallbackScript: [
                                     classpath: [],
                                     sandbox: true,
