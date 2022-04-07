@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-hello-world-manifests
+  namespace: java-hello-world-manifests
+spec:
+  replicas: 1
+  containers:
+    - name: java-hello-world-manifests
+      image: gcr.io/verdant-victory-344817/java_hello_world:4
+      imagePullPolicy: Always
+      securityContext:
+        privileged: false
+      ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
