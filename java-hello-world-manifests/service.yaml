@@ -11,3 +11,6 @@ spec:
       protocol: TCP
       name: http
       nodePort: 30007
+  selector:
+    app.kubernetes.io/name: java-hello-world-manifests
+    app.kubernetes.io/instance: java-hello-world-manifests
