@@ -25,3 +25,20 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-hello-world-manifests-svc
+  namespace: java-hello-world-manifests
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+      nodePort: 30007
+  selector:
+    app.kubernetes.io/name: java-hello-world-manifests
+    app.kubernetes.io/instance: java-hello-world-manifests
