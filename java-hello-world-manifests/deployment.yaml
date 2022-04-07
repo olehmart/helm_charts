@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: java-hello-world-manifests
-          image: "gcr.io/verdant-victory-344817/java_hello_world:4"
+          image: "gcr.io/verdant-victory-344817/java_hello_world:3"
           imagePullPolicy: Always
           securityContext:
             privileged: false
