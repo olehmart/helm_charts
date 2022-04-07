@@ -9,13 +9,19 @@ spec:
     matchLabels:
       app.kubernetes.io/name: java-hello-world-manifests
       app.kubernetes.io/instance: java-hello-world-manifests
-  containers:
-    - name: java-hello-world-manifests
-      image: gcr.io/verdant-victory-344817/java_hello_world:4
-      imagePullPolicy: Always
-      securityContext:
-        privileged: false
-      ports:
-        - name: http
-          containerPort: 8080
-          protocol: TCP
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: java-hello-world-manifests
+        app.kubernetes.io/instance: java-hello-world-manifests
+    spec:
+      containers:
+        - name: java-hello-world-manifests
+          image: "gcr.io/verdant-victory-344817/java_hello_world:4"
+          imagePullPolicy: Always
+          securityContext:
+            privileged: false
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
