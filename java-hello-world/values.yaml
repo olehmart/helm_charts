@@ -13,10 +13,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 psp:
-  enabled: true
+  enabled: false
   name: init-psp
 nsp:
-  enabled: true
+  enabled: false
 
 service:
   type: NodePort
